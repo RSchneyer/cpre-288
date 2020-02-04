@@ -12,48 +12,41 @@
 #define BUMP_SIDESTEP_MM 250
 
 void move_forward_smart(oi_t *sensor_data, double distance_mm, int move_speed){
-    double linear_dist_moved_mm = 0;
+    double dist_moved_mm = 0;
     int r_bump_status = 0;
     int l_bump_status = 0;
-    while(linear_dist_moved_mm < distance_mm){
-        oi_setWheels(move_speed, move_speed);
-        r_bump_status = sensor_data -> bumpRight;
-        l_bump_status = sensor_data -> bumpLeft;
-        while((l_bump_status == 0) && (r_bump_status == 0))
-        {
-            oi_update(sensor_data);
-            linear_dist_moved_mm += sensor_data -> distance;
-            r_bump_status = sensor_data -> bumpRight;
-            l_bump_status = sensor_data -> bumpLeft;
-        }
+	oi_setWheels(move_speed, move_speed);
+    while(dist_moved_mm < distance_mm){
+        oi_update(sensor_data); //update sensor data
+        dist_moved_mm += sensor_data -> distance; //update distance value
+        r_bump_status = sensor_data -> bumpRight; //update the value of the right bump sensor
+        l_bump_status = sensor_data -> bumpLeft; //update the value of the left bump sensor
+		lcd_printf("%f", &dist_moved_mm); // displays distance covered on LCD screen
+		
         if(l_bump_status != 0){//left bumper triggered
             oi_setWheels(0,0); //stop
-            move_forward(sensor_data, BUMP_BACKTRACK_MM, -125);
-            linear_dist_moved_mm -= BUMP_BACKTRACK_MM;
-            turn_right(sensor_data, 90);
-            move_forward(sensor_data, BUMP_SIDESTEP_MM, 125);
-            turn_left(sensor_data, 90);
+            move_forward(sensor_data, BUMP_BACKTRACK_MM, -125); //backup after hitting obstacle 
+            dist_moved_mm += BUMP_BACKTRACK_MM; //add distance backed up to total distance covered
+            turn_right(sensor_data, 90); //turn to the right away from the obstacle
+            move_forward(sensor_data, BUMP_SIDESTEP_MM, 125); //move in the opposite direction of the obstacle
+			dist_moved_mm += BUMP_SIDESTEP_MM; //add distance moved to total distance covered
+            turn_left(sensor_data, 90); //turn back to face original direction
+			oi_setWheels(move_speed, move_speed); //resume
         }
         if(r_bump_status != 0){//right bumper triggered
             oi_setWheels(0,0); //stop
-            move_forward(sensor_data, BUMP_BACKTRACK_MM, -125);
-            linear_dist_moved_mm -= BUMP_BACKTRACK_MM;
-            turn_left(sensor_data, 90);
-            move_forward(sensor_data, BUMP_SIDESTEP_MM, 125);
-            turn_right(sensor_data, 90);
+            move_forward(sensor_data, BUMP_BACKTRACK_MM, -125); //backup after hitting obstacle 
+            dist_moved_mm += BUMP_BACKTRACK_MM; //add distance backed up to total distance covered
+            turn_left(sensor_data, 90); //turn to the left away from the obstacle
+            move_forward(sensor_data, BUMP_SIDESTEP_MM, 125); //move in the opposite direction of the obstacle
+			dist_moved_mm += BUMP_SIDESTEP_MM; //add distance moved to total distance covered
+            turn_right(sensor_data, 90); //turn back to face original direction
+			oi_setWheels(move_speed, move_speed); //resume
         }
 
     }
-    oi_setWheels(0,0);
+    oi_setWheels(0,0); //stop
 }
-//void move_forward_smart(oi_t *sensor_data, double distance_mm, int move_speed){
-//    oi_setWheels(250, 250);
-//    oi_update(sensor_data);
-//    while((sensor_data ->bumpLeft == 0) && (sensor_data -> bumpRight == 0)){
-//        oi_update(sensor_data);
-//    }
-//    oi_setWheels(0,0);
-//}
 
 double move_forward(oi_t *sensor_data, double distance_mm, int moveSpeed)
 {
