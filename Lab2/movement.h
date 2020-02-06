@@ -12,6 +12,8 @@ void move_forward_smart(oi_t *sensor_data, double distance_mm, int move_speed);
 
 double move_forward(oi_t *sensor_data, double distance_mm, int moveSpeed);
 
+double move_backward(oi_t *sensor_data, double distance_mm, int moveSpeed);
+
 
 void turn_right(oi_t *sensor_data, double degrees);
 
