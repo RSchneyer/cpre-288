@@ -1,3 +1,7 @@
+# Ignore folders created by Code Composer Studio
+Debug/
+targetConfigs/
+
 # Prerequisites
 *.d
 
