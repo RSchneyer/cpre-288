@@ -8,7 +8,7 @@
  *
  * @author Phillip Jones, updated 6/4/2019
  */
-
+#include <stdio.h>
 #include "button.h"
 #include "timer.h"
 #include "lcd.h"
@@ -56,21 +56,29 @@ int main(void) {
     cyBOT_Scan_t data;
     int a, x;
     char header[] = "Angle\tPING distance\tIR raw value\r\n";// 34
+    char data_line[50];
+    int header_length = 34;
     while(1)
     {
         rec = cyBot_getByte_blocking();
 
         if (rec == 'm')
         {
-            for(x=0;x<34;x++){cyBot_sendByte(header[x]);}
+            
+            for(x=0;x<header_length;x++){cyBot_sendByte(header[x]);}
+            
             for (a=0;a<=180;a+=5)
             {
                 cyBOT_Scan(a, &data);// YOUR CODE HERE
-                lcd_printf("%d %d", a, data.IR_raw_val);
-                cyBot_sendByte((char) a);
-                cyBot_sendByte('\t');
-//                cyBot_sendByte(data -> IR_raw_val);
-                cyBot_sendByte('\r\n');
+                
+                sprintf(data_line, "%d\t%d\t%.2f\r\n", a, data.IR_raw_val, data.sound_dist);
+                char* data_line_pos = data_line;
+                while(*data_line_pos !='\0'){cyBot_sendByte(*data_line_pos++);}
+                
+//                 lcd_printf("%d %d", a, data.IR_raw_val);
+//                 cyBot_sendByte((char) a);
+//                 cyBot_sendByte('\t');
+//                 cyBot_sendByte('\r\n');
             }
             lcd_printf("DONE");
         }
