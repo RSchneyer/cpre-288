@@ -64,21 +64,16 @@ int main(void) {
 
         if (rec == 'm')
         {
-            
+
             for(x=0;x<header_length;x++){cyBot_sendByte(header[x]);}
-            
+
             for (a=0;a<=180;a+=5)
             {
                 cyBOT_Scan(a, &data);// YOUR CODE HERE
-                
-                sprintf(data_line, "%d\t%d\t%.2f\r\n", a, data.IR_raw_val, data.sound_dist);
+
+                sprintf(data_line, "%d\t%d\t\t%.2f\r\n", a, data.IR_raw_val, data.sound_dist);
                 char* data_line_pos = data_line;
                 while(*data_line_pos !='\0'){cyBot_sendByte(*data_line_pos++);}
-                
-//                 lcd_printf("%d %d", a, data.IR_raw_val);
-//                 cyBot_sendByte((char) a);
-//                 cyBot_sendByte('\t');
-//                 cyBot_sendByte('\r\n');
             }
             lcd_printf("DONE");
         }
