@@ -71,7 +71,7 @@ int main(void) {
             {
                 cyBOT_Scan(a, &data);// YOUR CODE HERE
 
-                sprintf(data_line, "%d\t%d\t\t%.2f\r\n", a, data.IR_raw_val, data.sound_dist);
+                sprintf(data_line, "%d\t%.2f\t\t%d\r\n", a,data.sound_dist, data.IR_raw_val);
                 char* data_line_pos = data_line;
                 while(*data_line_pos !='\0'){cyBot_sendByte(*data_line_pos++);}
             }
